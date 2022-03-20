@@ -26,6 +26,8 @@ information within will help others to create nice, clean and secure computing e
 11. [Create a sudo user](#11-create-a-sudo-user)
 12. [Configure GRUB](#12-configure-grub)
 
+### [SSH Configuration](#ssh-configuration)
+
 ## Arch Linux Install Guide
 
 The official installation guide for Arch Linux can be found [here](https://wiki.archlinux.org/title/Installation_guide).
@@ -715,4 +717,84 @@ reboot
 
 # or shutdown
 shutdown now
+```
+
+## SSH Configuration
+
+### Server
+
+```sh
+# Enable the SSH server daemon
+sudo systemctl enable sshd
+
+# Open server-side configuration file
+sudo nano /etc/ssh/sshd_config
+```
+
+Some notable options here:
+
+```
+# Ports to listen on
+# Multiple of these allowed
+Port 22
+
+# Local IP addresses to listen on
+# Multiple of these allowed
+# Default is to listen on all local addresses
+ListenAddress 0.0.0.0
+
+# Controls whether root account can be accessed over SSH
+PermitRootLogin (yes | prohibit-password | forced-commands-only | no)
+
+# Only allows login if the user has the correct file permissions set
+# $HOME must only be writable by the user e.g. rwxr-xr-x (755)
+# $HOME/.ssh must be rwx------ (700)
+StrictModes (yes | no)
+
+# Controls whether public key authentication is allowed
+PubkeyAuthentication (yes | no)
+
+# Controls whether password authentication is allowed
+PasswordAuthentication (yes | no)
+```
+
+### Client
+
+#### Generate keys
+
+You only need to do this once per user.
+
+```sh
+ssh-keygen
+```
+
+#### Upload your key to the SSH server
+
+```sh
+# Copy your public key to authorized_keys on server
+ssh-copy-id admin@192.168.10.2
+```
+
+Now you can access without a password prompt.
+
+#### Add a remote server to hosts file
+
+```sh
+# Open the hosts file as root
+sudo nano /etc/hosts
+```
+
+Add the server's IP address along with a name:
+
+```
+...
+192.168.10.2   server-name
+```
+
+Now `192.168.10.2` can be accessed by `server-name` instead.  
+For example:
+
+```sh
+# Connect via SSH
+ssh admin@server-name
 ```
