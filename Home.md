@@ -610,6 +610,19 @@ Save the file, then:
 mkinitcpio -p linux
 ```
 
+#### Adjust time settings
+
+```sh
+# Set the timezone (again)
+ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
+
+# Enable network time protocol (again)
+timedatectl set-ntp true
+
+# Generate /etc/adjtime
+hwclock --systohc
+```
+
 #### Generate locale
 
 ```sh
