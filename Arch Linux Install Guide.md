@@ -369,7 +369,7 @@ swapon /dev/vg0/swap
 
 `pacstrap` will install the Linux kernel, and any other packages we tell it to, onto the new file system.
 
-Be sure to read this entire section to ensure your system gets all the packages it needs.
+Be sure to read this entire section to ensure your system gets all the packages it needs. Might as well install everything now in one go so that you can make a cup of tea while your 64K modem works its [magic](https://youtu.be/aV8DEJ8ydJQ?t=4).
 
 ```sh
 # Install the essentials
@@ -390,14 +390,11 @@ If you're using LVM, include `lvm2`.
 
 ### Networking
 
-Your new system won't have any networking configured whatsoever, so be sure to install packages for networking now,
-while you can.
+Your new system won't have any networking configured whatsoever, so be sure to install packages for networking now, while you can. Just remember that enabling multiple networking services can cause conflicts!
 
-Most people should use `networkmanager`, especially if you will be using a graphical desktop environment.
+Most people should use `networkmanager`, especially if you will be using a graphical desktop environment. `network-manager-applet` will install a system tray applet for managing connections.
 
 If your system uses a wired connection only, you could include just `dhcpcd` for a minimal set up.
-
-Include `openssh` if you plan on using SSH.
 
 ### Console text editor
 
@@ -413,9 +410,9 @@ I've only really used XFCE desktop, so I recommend that. include `xorg-server`, 
 
 ### Other goodies
 
-- `base-devel` includes tools for building packages.
-- `os-prober` will help GRUB find other OS you have installed to display as an option on the GRUB menu.
-- `yay` is a helper for installing AUR packages that aren't available with `pacman`.
+- `base-devel` - Includes tools for building packages.
+- `openssh` - If you plan on using SSH as a client or a server.
+- `os-prober` - Will help GRUB find other OS you have installed to display as an option on the GRUB boot menu.
 
 ## 9. Generate & tweak `fstab`
 
@@ -500,6 +497,9 @@ Add the following, substituting `my-pc` for the hostname you chose:
 ```
 
 ### Network
+
+Now configure any networking packages you installed earlier.  
+*(See: [Install packages/Networking](#networking))*
 
 #### Network Manager
 
@@ -696,4 +696,91 @@ reboot
 
 # or shutdown
 shutdown now
+```
+
+## More Config
+
+Here is some additional configuration you can perform on your Arch system once you've rebooted (or before you exit `arch-chroot`.)
+
+### Install an AUR helper
+
+You may wish to install software that isn't available via `pacman`, but that can be found on the [Arch User Repository (AUR)](https://aur.archlinux.org/packages). These packages are a little more complicated to set up, but you can install an AUR helper to automate the process.
+
+`yay` doubles as a wrapper for `pacman`, so you can use it in place of `pacman` to manage both your Arch and AUR packages at the same time.
+
+To install `yay`, first make sure you are logged in as the sudo user you [set up earlier](#11-create-a-sudo-user), then:
+
+```sh
+# Install base-devel & Git, if you haven't already
+sudo pacman -Sy base-devel git
+
+# Clone the yay repository
+git clone https://aur.archlinux.org/yay.git
+
+# Enter the yay cloned repo
+cd yay
+
+# Finally, build and install yay
+makepkg -si
+```
+
+This is actually the process for other AUR packages, but it's a pain doing this manually every time. Besides, now you can use `yay` to update everything!
+
+```sh
+# Installs an AUR or pacman package
+yay -Sy [package]
+
+# Updates all AUR and pacman packages
+yay -Syu
+
+# Remove an AUR or pacman package and any no longer needed dependencies
+yay -Rs [package]
+```
+
+### Set a console screen timeout
+
+```sh
+# Screen turns off after 1 minute of inactivity in console
+setterm -blank 1
+```
+
+### Change laptop lid close behaviour
+
+```sh
+# Edit systemd-logind settings
+sudo nano /etc/systemd/logind.conf
+```
+
+Uncomment and and edit `HandleLidSwitch` and `HandleLidSwitchExternalPower`.
+
+"The specified action for each event can be one of `ignore`, `poweroff`, `reboot`, `halt`, `suspend`, `hibernate`, `hybrid-sleep`, `suspend-then-hibernate`, `lock` or `kexec`."
+
+Default is `suspend`, but for example you could set it to `lock` to simply turn off the screen:
+
+```
+...
+HandleLidSwitch=lock
+HandleLidSwitchExternalPower=lock
+...
+```
+
+### Set a console auto-logout timeout
+
+```sh
+# Create a file
+sudo nano /etc/profile.d/autologout.sh
+```
+
+Set the `TMOUT` variable to the number of seconds before an auto-logout.  
+e.g. 5 minutes:
+
+```
+TMOUT=300
+readonly TMOUT
+export TMOUT
+```
+
+```sh
+# Set execute permission
+sudo chmod +x /etc/profile.d/autologout.sh
 ```
