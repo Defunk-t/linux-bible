@@ -12,5 +12,5 @@ Pages are written in [markdown](https://docs.github.com/en/get-started/writing-o
 
 ## Contents
 
-### [Arch Linux Install Guide](Arch-Linux-Install-Guide)
-### [SSH Configuration](SSH-Configuration)
+- **[Arch Linux Install Guide](Arch-Linux-Install-Guide)**
+- **[SSH Configuration](SSH-Configuration)**
