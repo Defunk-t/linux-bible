@@ -613,6 +613,18 @@ Then:
 locale-gen
 ```
 
+You also need to set the locale in `/etc/conf`:
+
+```
+LANG=en_GB.UTF-8
+```
+
+Also set the keyboard layout in `etc/vconsole.conf`:
+
+```
+KEYMAP=uk
+```
+
 ## 11. Create a sudo user
 
 It's best to never use the root user after the installation process. Instead, it is recommended to create a new user to
@@ -784,3 +796,10 @@ export TMOUT
 # Set execute permission
 sudo chmod +x /etc/profile.d/autologout.sh
 ```
+
+### Enable `pacman` `VerbosePkgLists`
+
+Shows more information about package upgrades, including old and new versions and sizes.
+
+1. Edit `/etc/pacman.conf`
+2. Uncomment `VerbosePkgLists`
