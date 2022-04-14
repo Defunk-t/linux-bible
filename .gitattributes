@@ -1,1 +1,2 @@
-*.md linguist-detectable=true
+      *.md linguist-detectable=true  linguist-documentation=false
+/README.md linguist-detectable=false linguist-documentation=true

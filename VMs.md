@@ -73,13 +73,27 @@ You can use `curl` to directly download an installation image if you know where 
 cd /var/vm/images
 
 # Download the image into here
-curl https://releases.ubuntu.com/20.04.4/ubuntu-20.04.4-live-server-amd64.iso
+curl -O https://releases.ubuntu.com/20.04.4/ubuntu-20.04.4-live-server-amd64.iso
 ```
 
 You'll need to boot a VM from the installation media while a disk image is attached so that you can install the operating system onto it.
 
-```sh
+```
 qemu-system-x86_64 -cdrom /var/vm/images/ubuntu-20.04.4-live-server-amd64.iso -boot order=d -drive file=/var/vm/disks/test-vm.raw,format=raw
 ```
 
 QEMU will create a VNC display server on port `5900` which you can use a VNC viewer to connect to from the host machine. If you need to connect from another machine, add `-vnc :0` to the command.
+
+## Run a KVM
+
+```sh
+qemu-system-x86_64 -enable-kvm -machine q35 -cpu host -m 4G -drive file=/var/vm/disk/app-server_ubuntu.raw,format=raw -vnc :0
+```
+
+## Port forwarding
+
+Add the following to the `qemu-system-x86_64` command, using your own choice of port in place of `60022`. This example will make port `22` (SSH) of the guest available at the host's port `60022`.
+
+```
+-nic user,hostfwd=tcp::60022-:22
+```
