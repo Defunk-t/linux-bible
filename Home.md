@@ -4,4 +4,4 @@ I figured I'd congregate all the Linux knowledge I gain into one place, so that 
 
 ## Contributing
 
-Contributions are welcome. Feel free to fork this repo and create a pull request. The easiest way is to go to the [GitHub repo](https://github.com/defunk-t/linux-bible), open a source file, and press the edit button. Pages are written in [markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+Contributions are welcome. Feel free to fork this repo and create a pull request. The easiest way is to go to the [GitHub repo](https://github.com/aidlran/linux-bible), open a source file, and press the edit button. Pages are written in [markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
