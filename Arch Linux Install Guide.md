@@ -373,8 +373,12 @@ Be sure to read this entire section to ensure your system gets all the packages 
 
 ```sh
 # Install the essentials
-pacstrap /mnt base linux linux-firmware grub efibootmgr sudo
+pacstrap /mnt base linux linux-firmware base-devel grub efibootmgr sudo
 ```
+
+### EFI
+
+If you're not using EFI you don't need `efibootmgr`.
 
 ### LTS kernel
 
@@ -392,26 +396,21 @@ If you're using LVM, include `lvm2`.
 
 Your new system won't have any networking configured whatsoever, so be sure to install packages for networking now, while you can. Just remember that enabling multiple networking services can cause conflicts!
 
-Most people should use `networkmanager`, especially if you will be using a graphical desktop environment. `network-manager-applet` will install a system tray applet for managing connections.
+Most people should use `networkmanager`, especially if you will be using a graphical desktop environment and multiple WiFi networks. `network-manager-applet` will install a system tray applet for managing connections.
 
-If your system uses a wired connection only, you could include just `dhcpcd` for a minimal set up.
+If your system uses a wired connection only, or if you're willing to spend some time configuring, you can use `dhcpcd` instead for a minimal set up.
 
-### Console text editor
+### Text editor
 
-You'll probably need something to edit configuration files in the terminal, so I highly recommend
-that you include `nano`. If you're already used to GUI editors, you'll get along with it better.
+You'll probably need something to edit configuration files in the terminal. You can use `vim`, `nano`, or any editor of your choosing. If you're unsure of which one to pick, go for `nano`.
 
-Another popular editor is `vim`, but it has a very different paradigm, and a learning curve if you're
-already used to GUI editors.
+### Desktop Environment
 
-### Graphical desktop
-
-I've only really used XFCE desktop, so I recommend that. include `xorg-server`, `xfce4` and `xfce4-goodies`.
+I've only really used XFCE desktop environment, so I recommend that. It's the most minimal desktop environment that I know of. include `xorg-server`, `xfce4` and `xfce4-goodies`.
 
 ### Other goodies
 
-- `base-devel` - Includes tools for building packages.
-- `openssh` - If you plan on using SSH as a client or a server.
+- `openssh` - If you plan on using SSH.
 - `os-prober` - Will help GRUB find other OS you have installed to display as an option on the GRUB boot menu.
 
 ## 9. Generate & tweak `fstab`
@@ -432,8 +431,7 @@ nano /mnt/etc/fstab
 
 ### Tweak: `relatime` or `noatime`
 
-To prolong SSD life and improve performance, you may want to add a `relatime` or `noatime` mount option to intelligently
-limit or fully prevent updating the access time every time any file is accessed.
+To prolong SSD life and improve performance, you may want to add a `relatime` or `noatime` mount option to intelligently limit or fully prevent updating the access time every time any file is accessed. Your `fstab` was likely generated with `relatime` enabled.
 
 ```
 # /dev/mapper/vg0-root
@@ -591,38 +589,24 @@ hwclock --systohc
 
 ### Generate locale
 
-```sh
-# Open file
-nano /etc/locale.gen
-```
+Open `/etc/locale.gen` and uncomment your locale. In my case, I uncomment `en_GB.UTF-8`.
 
-Uncomment your locale. In my case, I'll uncomment `en_GB.UTF-8`:
-
-```
-...
-#en_DK ISO-8859-1
-en_GB.UTF-8 UTF-8
-#en_GB ISO-8859-1
-...
-```
-
-Then:
+Once you've done that, generate the locale:
 
 ```sh
-# Generate locale
 locale-gen
 ```
 
-You also need to set the locale in `/etc/conf`:
+You also need to set the locale in `/etc/locale.conf`:
 
-```
-LANG=en_GB.UTF-8
+```sh
+echo "LANG=en_GB.UTF-8" >> /etc/locale.conf
 ```
 
 Also set the keyboard layout in `etc/vconsole.conf`:
 
-```
-KEYMAP=uk
+```sh
+echo "KEYMAP=uk" >> /etc/vconsole.conf
 ```
 
 ## 11. Create a sudo user
@@ -724,7 +708,7 @@ To install `yay`, first make sure you are logged in as the sudo user you [set up
 
 ```sh
 # Install base-devel & Git, if you haven't already
-sudo pacman -Sy base-devel git
+sudo pacman -S base-devel git
 
 # Clone the yay repository
 git clone https://aur.archlinux.org/yay.git
@@ -740,7 +724,7 @@ This is actually the process for other AUR packages, but it's a pain doing this 
 
 ```sh
 # Installs an AUR or pacman package
-yay -Sy [package]
+yay -S [package]
 
 # Updates all AUR and pacman packages
 yay -Syu
